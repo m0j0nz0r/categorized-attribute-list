@@ -1,0 +1,15 @@
+{
+  "defaultValue" : "Default Value",
+  "string" : "String",
+  "obj" : "Object",
+  "none" : "None",
+  "number" : "Number",
+  "boolean" : "Boolean",
+  "date-time" : "Date-Time",
+  "cdata" : "CDATA",
+  "uri" : "URI",
+  "nameFieldPlaceholder" : "Enter a name",
+  "descriptionFieldPlaceholder" : "Enter a description for your new attribute",
+  "defaultValueFieldPlaceholder" : "Enter a default value",
+  "enumerationsFieldPlaceholder" : "Enter a value"
+}
