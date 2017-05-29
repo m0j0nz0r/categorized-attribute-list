@@ -61,6 +61,8 @@ class App extends Component {
             >
                 {panels}
             </Collapse>;
+        let saveButtonClasses = "btn btn-success" + (this.isValid()?'':' disabled');
+
         if (panels.length === 1){
             collapse = <Collapse
                 accordion={true}
@@ -73,6 +75,7 @@ class App extends Component {
             <TabPanel key={"tab-panel-" + index}>
                 {collapse}
                 <button type="button" className="btn btn-primary" onClick={this.addAttribute.bind(this, index)}>Add attribute</button>
+                <button className={saveButtonClasses}>Save</button>
             </TabPanel>
         );
     }
@@ -95,6 +98,14 @@ class App extends Component {
     onTabSelect(index, lastIndex, event){
         this.setState({selectedIndex: index});
         return false;
+    }
+    isValid(){
+        let valid = false;
+        if (this.state.paddedValues.length){
+            valid = !this.state.paddedValues.find((v) => {return !v.isValid;});
+            console.log(valid);
+        }
+        return valid;
     }
     render() {
         let panels = categories.map(this.getTabPanel);

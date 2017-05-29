@@ -169,7 +169,8 @@ class Attribute extends Component {
         this.state = {
             value: props.value,
             options: options,
-            attribute: Attribute.getAttribute(props.value)
+            attribute: Attribute.getAttribute(props.value),
+            isValid: false
         };
     }
 
@@ -212,9 +213,12 @@ class Attribute extends Component {
         this.showErrors(this.refs.form.validate());
     }
 
-    componentDidUpdate(){
-        if (this.state.value.name && this.state.options.fields.name.hasError !== this.props.isDuplicated){
+    componentDidUpdate(prevProps, prevState){
+        if (this.state.value.name && (this.state.options.fields.name.hasError !== this.props.isDuplicated)){
             this.showErrors(this.refs.form.validate());
+        }
+        if (this.state.isValid !== prevState.isValid){
+            this.props.onChange(this.state.value, this.getPaddedValue(this.state.value));
         }
     }
 
@@ -251,6 +255,7 @@ class Attribute extends Component {
 
     showErrors(validationResults){
         let options = t.update(this.state.options, {
+            hasError: {$set:false},
             fields: {
                 name:{
                     hasError:{$set:false}
@@ -382,6 +387,7 @@ class Attribute extends Component {
                 }
             })
         }
+
         this.setState({options:options, isValid: isValid});
     }
 
