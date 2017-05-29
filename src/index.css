@@ -1,5 +1,15 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+.has-error>input    {
+    border: solid #a94442 1px;
+    background: #f2dede;
+}
+.help-block{
+    font-size: .75rem;
+}
+.error-block{
+    color: #a94442;
 }
