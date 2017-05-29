@@ -186,11 +186,11 @@ class Attribute extends Component {
     }
 
     static validateAttribute(value){
-        if (!value.name || !value.unitOfMeasurement){
+        if (!value.name){
             return false;
         }
         if ("number" === value.format){
-            return Attribute.validateNumberFormat(value).lenght === 0;
+            return !!value.unitOfMeasurement && Attribute.validateNumberFormat(value).length === 0;
         }
         return true;
     }
@@ -208,6 +208,7 @@ class Attribute extends Component {
     }
 
     componentDidMount(){
+        this.props.onChange(this.state.value, this.getPaddedValue(this.state.value));
         this.showErrors(this.refs.form.validate());
     }
 
@@ -275,9 +276,10 @@ class Attribute extends Component {
                 }
             }
 
-        });
+        }), isValid = true;
 
         if (!validationResults.value.name){
+            isValid = false;
             options = t.update(options, {
                 fields:{
                     name: {
@@ -292,6 +294,7 @@ class Attribute extends Component {
             })
         }
         else if(this.props.isDuplicated){
+            isValid = false;
             options = t.update(options, {
                 fields:{
                     name: {
@@ -307,6 +310,7 @@ class Attribute extends Component {
         }
 
         if ("number" === validationResults.value.format && !validationResults.value.unitOfMeasurement){
+            isValid = false;
             options = t.update(options, {
                 fields:{
                     unitOfMeasurement: {
@@ -322,6 +326,7 @@ class Attribute extends Component {
         }
 
         if (validationResults.errors.length){
+            isValid = false;
             validationResults.errors.forEach((error) => {
                 let errors;
                 if (!error.path.length){
@@ -377,7 +382,7 @@ class Attribute extends Component {
                 }
             })
         }
-        this.setState({options:options});
+        this.setState({options:options, isValid: isValid});
     }
 
     getPaddedValue(value){
@@ -403,6 +408,7 @@ class Attribute extends Component {
             }
             returnValue[k] = (newValue===undefined)?null:newValue;
         });
+        returnValue.isValid = this.state.isValid;
         return returnValue;
     }
 

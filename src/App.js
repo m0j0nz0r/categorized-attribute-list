@@ -43,9 +43,9 @@ class App extends Component {
             }
         }
         return (
-            <Collapse.Panel header={header}>
+            <Collapse.Panel key={"panel-" + index} header={header}>
                 <Attribute
-                    key={"panel-" + index}
+                    key={"attribute-" + index}
                     value={value}
                     onChange={this.onChangeHandler.bind(this, index)}
                     isDuplicated={isDuplicated}
@@ -55,14 +55,23 @@ class App extends Component {
     }
 
     getTabPanel(categoryName, index){
-        let panels = this.state.values.filter((v)=>{return v.category === index}).map(this.getPanel);
+        let panels = this.state.values.filter((v)=>{return v.category === index}).map(this.getPanel),
+            collapse = <Collapse
+                accordion={true}
+            >
+                {panels}
+            </Collapse>;
+        if (panels.length === 1){
+            collapse = <Collapse
+                accordion={true}
+                activeKey="panel-0"
+            >
+                {panels}
+            </Collapse>;
+        }
         return (
-            <TabPanel>
-                <Collapse
-                    accordion={true}
-                >
-                    {panels}
-                </Collapse>
+            <TabPanel key={"tab-panel-" + index}>
+                {collapse}
                 <button type="button" className="btn btn-primary" onClick={this.addAttribute.bind(this, index)}>Add attribute</button>
             </TabPanel>
         );
@@ -74,6 +83,7 @@ class App extends Component {
     }
     addAttribute(category){
         let values = this.state.values, value = defaultAttributeValues;
+
 
         value.category = category;
 
@@ -88,7 +98,7 @@ class App extends Component {
     }
     render() {
         let panels = categories.map(this.getTabPanel);
-        let tabList = categories.map((v)=> <Tab>{v}</Tab>);
+        let tabList = categories.map((v)=> <Tab key={"tab-" + v}>{v}</Tab>);
         return (
             <div className="row">
                 <div className="col-6">
