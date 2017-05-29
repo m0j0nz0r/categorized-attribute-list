@@ -20,34 +20,39 @@ t.Number.getValidationErrorMessage = (value) => {
     return null;
 };
 
-const ResourceTypes = t.enums({0 : "Default Value"});
+const ResourceTypesObject = {0:"Default Value"};
+const ResourceTypes = t.enums(ResourceTypesObject);
 
-const DataTypes = t.enums({
+const DataTypesObject = {
     string: "String",
     obj: "Object"
-});
+};
+const DataTypes = t.enums(DataTypesObject);
 
-const FormatTypes = t.enums({
+const FormatTypesObject = {
     none: "None",
     number: "Number",
     bool: "Boolean",
     date: "Date-Time",
     data: "CDATA",
     uri: "URI"
-});
+};
+const FormatTypes = t.enums(FormatTypesObject);
 
 const RangeFields = t.refinement(t.struct({
-    minRange: t.Number,
-    maxRange: t.Number
+    rangeMin: t.Number,
+    rangeMax: t.Number
 }), (value) => {
-    return value.minRange <= value.maxRange;
+    return value.rangeMin <= value.rangeMax;
 });
+
 RangeFields.getValidationErrorMessage = (value) => {
-    if (value.minRange > value.maxRange){
+    if (value.rangeMin > value.rangeMax){
         return "Min range is greater than Max range";
     }
     return null;
 };
+
 const AttributeType = {
     name: t.maybe(t.String),
     description: t.maybe(t.String),
@@ -56,6 +61,22 @@ const AttributeType = {
     dataType: DataTypes,
     format: FormatTypes,
 };
+
+const defaultAttributeKeys = [
+    'category',
+    'name',
+    'description',
+    'deviceResourceType',
+    'defaultValue',
+    'dataType',
+    'format',
+    'enumerations',
+    'rangeMin',
+    'rangeMax',
+    'unitOfMeasurement',
+    'precision',
+    'accuracy'
+];
 
 const ConditionalAttributes = {
     formats:{
@@ -108,12 +129,12 @@ const options = {
         },
         range: {
             fields:{
-                minRange:{
+                rangeMin:{
                     attrs: {
                         placeholder: "Min range"
                     }
                 },
-                maxRange:{
+                rangeMax:{
                     attrs: {
                         placeholder: "Max range"
                     }
@@ -175,7 +196,7 @@ class Attribute extends Component {
     }
 
     static validateNumberFormat(value){
-        let a = value.range.maxRange - value.range.minRange,
+        let a = value.range && (value.range.rangeMax - value.range.rangeMin),
             errors = [];
         if (a % value.precision){
             errors.push(0);
@@ -208,7 +229,20 @@ class Attribute extends Component {
                 }
             }),
             attribute = Attribute.getAttribute(value);
-        this.props.onChange(value);
+        if (value.dataType === 'obj'){
+            value.defaultValue = null;
+            value.format = 'none';
+        }
+        if (value.format !== 'number'){
+            delete value.range;
+            delete value.unitOfMeasurement;
+            delete value.precision;
+            delete value.accuracy;
+        }
+        if (value.format !== 'none'){
+            value.enumerations = [];
+        }
+        this.props.onChange(value, this.getPaddedValue(value));
         this.setState({options: options, value: value, attribute: attribute}, () => {
             this.showErrors(this.refs.form.validate());
         });
@@ -225,10 +259,10 @@ class Attribute extends Component {
                 },
                 range: {
                     fields:{
-                        minRange:{
+                        rangeMin:{
                             hasError: {$set: false},
                         },
-                        maxRange:{
+                        rangeMax:{
                             hasError: {$set: false},
                         }
                     }
@@ -328,11 +362,11 @@ class Attribute extends Component {
                         fields: {
                             range: {
                                 fields:{
-                                    minRange:{
+                                    rangeMin:{
                                         hasError: {$set: true},
                                         error: {$set:error.message}
                                     },
-                                    maxRange:{
+                                    rangeMax:{
                                         hasError: {$set: true},
                                         error: {$set:error.message}
                                     }
@@ -344,6 +378,32 @@ class Attribute extends Component {
             })
         }
         this.setState({options:options});
+    }
+
+    getPaddedValue(value){
+        let returnValue = {};
+        defaultAttributeKeys.forEach((k) =>{
+            let newValue;
+            switch(k){
+                case 'deviceResourceType':
+                    newValue = ResourceTypesObject[value[k]];
+                    break;
+                case 'dataType':
+                    newValue = DataTypesObject[value[k]];
+                    break;
+                case 'format':
+                    newValue = FormatTypesObject[value[k]];
+                    break;
+                case 'rangeMin': 
+                case 'rangeMax':
+                    newValue = value.range && value.range[k];
+                    break;
+                default:
+                    newValue = value[k];
+            }
+            returnValue[k] = (newValue===undefined)?null:newValue;
+        });
+        return returnValue;
     }
 
     render() {

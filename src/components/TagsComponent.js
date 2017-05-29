@@ -46,11 +46,11 @@ class TagsComponent extends t.form.Component { // extend the base class
         return (locals) => {
             return <div className="list-input">
                     <ReactListInput
-                    initialStagingValue=''
-                    onChange={value => this.setState({value})}
-                    ItemComponent={this.Item}
-                    StagingComponent={this.StagingItem}
-                    value={locals.value}
+                        initialStagingValue=''
+                        onChange={locals.onChange}
+                        ItemComponent={this.Item}
+                        StagingComponent={this.StagingItem}
+                        value={locals.value}
                     />
             </div>;
         };

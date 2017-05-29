@@ -6,7 +6,9 @@
     "rc-collapse": "^1.7.5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-json-view": "^1.8.2",
     "react-list-input": "^1.0.3",
+    "react-tabs": "^1.0.0",
     "tcomb-form": "^0.9.16"
   },
   "devDependencies": {
