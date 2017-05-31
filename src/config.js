@@ -1,20 +1,32 @@
 import TagsComponent from './components/TagsComponent';
-const config = {
+import t from 'tcomb-form';
+const enumTypes = {
     "ResourceTypes" : {
-    "0" : "Default Value"
-},
+        "0" : "Default Value"
+    },
     "DataTypes" : {
-    "string" : "String",
+        "string" : "String",
         "obj" : "Object"
-},
+    },
     "FormatTypes" : {
-    "none" : "None",
+        "none" : "None",
         "number" : "Number",
         "bool" : "Boolean",
         "date" : "Date-Time",
         "data" : "CDATA",
         "uri" : "URI"
-},
+    }
+}
+const config = {
+    "enumTypes" : enumTypes,
+    "AttributeType" : {
+        name: t.maybe(t.String),
+        description: t.maybe(t.String),
+        deviceResourceType: t.enums(enumTypes.ResourceTypes),
+        defaultValue: t.maybe(t.String),
+        dataType: t.enums(enumTypes.DataTypes),
+        format: t.enums(enumTypes.FormatTypes),
+    },
     "AttributeOptions" : {
         "fields" : {
             "name" : {
@@ -79,6 +91,39 @@ const config = {
                 "attrs" : {
                     "placeholder" : "Accuracy (eg. 0.5)"
                 }
+            }
+        }
+    },
+    "defaultAttributeKeys" : [
+        'id',
+        'category',
+        'name',
+        'description',
+        'deviceResourceType',
+        'defaultValue',
+        'dataType',
+        'format',
+        'enumerations',
+        'rangeMin',
+        'rangeMax',
+        'unitOfMeasurement',
+        'precision',
+        'accuracy',
+        'isValid'
+    ],
+    "ConditionalAttributes" : {
+        formats:{
+            none: {
+                enumerations: t.list(t.String),
+            },
+            number:{
+                range: t.struct({
+                    rangeMin: t.Number,
+                    rangeMax: t.Number
+                }),
+                unitOfMeasurement: t.maybe(t.String),
+                precision: t.Number,
+                accuracy: t.Number
             }
         }
     }

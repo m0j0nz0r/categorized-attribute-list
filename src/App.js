@@ -35,7 +35,6 @@ class App extends Component {
     }
     getPanel(value){
         let header = "",
-            isDuplicated = App.isDuplicated(value.name, this.state.values),
             index = this.state.values.indexOf(value);
         if (value.name){
             header = value.name;
@@ -48,8 +47,8 @@ class App extends Component {
                 <Attribute
                     key={"attribute-" + index}
                     value={value}
+                    values={this.state.values}
                     onChange={this.onChangeHandler.bind(this, index)}
-                    isDuplicated={isDuplicated}
                 />
             </Collapse.Panel>
         );
@@ -80,16 +79,12 @@ class App extends Component {
             </TabPanel>
         );
     }
-    static isDuplicated(name, values){
-        let counter = 0;
-        values.forEach((v) => {if (v.name === name){ counter++;}});
-        return counter > 1;
-    }
     addAttribute(category){
         let values = this.state.values, value = defaultAttributeValues;
 
 
         value.category = category;
+        value.id = Math.random().toString(36).substr(2);
 
         values.push(value);
 
