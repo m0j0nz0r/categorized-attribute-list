@@ -45,7 +45,7 @@ const config = {
                 "nullOption" : false
             },
             "enumerations" : {
-                "template" : TagsComponent,
+                "factory" : TagsComponent,
                 "attrs" : {
                     "placeholder" : "Enter value"
                 }
