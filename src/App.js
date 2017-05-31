@@ -55,19 +55,12 @@ class App extends Component {
         let panels = this.state.values.filter((v)=>{return v.category === index}).map(this.getPanel),
             collapse = <Collapse
                 accordion={true}
+                defaultActiveKey="panel-0"
             >
                 {panels}
             </Collapse>;
         let saveButtonClasses = "btn btn-success" + (this.isValid()?'':' disabled');
 
-        if (panels.length === 1){
-            collapse = <Collapse
-                accordion={true}
-                activeKey="panel-0"
-            >
-                {panels}
-            </Collapse>;
-        }
         return (
             <TabPanel key={"tab-panel-" + index}>
                 {collapse}
@@ -77,8 +70,7 @@ class App extends Component {
         );
     }
     addAttribute(category){
-        let values = this.state.values, value = defaultAttributeValues;
-
+        let values = this.state.values.slice(0), value = Object.assign({}, defaultAttributeValues);
 
         value.category = category;
         value.id = Math.random().toString(36).substr(2);
@@ -88,7 +80,7 @@ class App extends Component {
         this.setState({values: values});
     }
 
-    onTabSelect(index, lastIndex, event){
+    onTabSelect(index){
         this.setState({selectedIndex: index});
         return false;
     }
