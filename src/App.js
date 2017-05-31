@@ -6,14 +6,10 @@ import Collapse from 'rc-collapse';
 import 'rc-collapse/assets/index.css'
 import Attribute from './components/Attribute';
 import ReactJson from 'react-json-view';
+import config from './config';
 
-const defaultAttributeValues = {
-    deviceResourceType: 0,
-    dataType: "string",
-    format: "none",
-    enumerations: []
-};
-const categories =['Category 1', 'Category 2', 'Category 3', 'Category 4'];
+const defaultAttributeValues = config.defaultAttributeValues;
+const categories = config.categories;
 
 class App extends Component {
     constructor(props, context, updater){
@@ -27,10 +23,10 @@ class App extends Component {
             selectedIndex: 0
         };
     }
-    onChangeHandler(index, value, paddedValue){
+    onChangeHandler(index, value){
         let values = this.state.values, paddedValues = this.state.paddedValues;
         values[index] = value;
-        paddedValues[index] = paddedValue;
+        paddedValues[index] = Attribute.getPaddedValue(value);
         this.setState({values:values, paddedValues:paddedValues});
     }
     getPanel(value){
@@ -49,6 +45,7 @@ class App extends Component {
                     value={value}
                     values={this.state.values}
                     onChange={this.onChangeHandler.bind(this, index)}
+                    selectedIndex={this.state.selectedIndex}
                 />
             </Collapse.Panel>
         );

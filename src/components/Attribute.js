@@ -12,15 +12,28 @@ const ConditionalAttributes = config.ConditionalAttributes;
 
 class Attribute extends Component {
     constructor(props, context, updater){
+        const value = props.value;
         super(props, context, updater);
 
         this.onFormChange = this.onFormChange.bind(this);
 
+        const errorList = validator.getAttributeErrors(value, props.values);
+
+        const nameErrors = errorList.find((v) => v.field === "name");
+
+        let options = config.AttributeOptions;
+        if (nameErrors && nameErrors.code === "006" && !options.fields.name.hasError){
+            options = Attribute.getErrorDisplayOptions(options, errorList);
+
+            value.isValid = false;
+        }
+
         this.state = {
-            value: props.value,
-            options: config.AttributeOptions,
+            value: value,
+            options: options,
             attribute: Attribute.getAttribute(props.value)
         };
+
     }
 
     static getAttribute(value){
@@ -133,8 +146,7 @@ class Attribute extends Component {
 
         return returnValue;
     }
-
-    onFormChange(value){
+    onFormChange(value, skipUpdate){
         let options = t.update(this.state.options, {
                 fields: {
                     defaultValue: {
@@ -156,7 +168,7 @@ class Attribute extends Component {
 
         value.isValid = errorList.length === 0;
 
-        this.props.onChange(value, Attribute.getPaddedValue(value));
+        this.props.onChange(value);
 
         this.setState({options: options, value: value, attribute: attribute});
     }

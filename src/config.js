@@ -111,6 +111,13 @@ const config = {
         'accuracy',
         'isValid'
     ],
+    "defaultAttributeValues": {
+        deviceResourceType: 0,
+        dataType: "string",
+        format: "none",
+        enumerations: [],
+        isValid: false
+    },
     "ConditionalAttributes" : {
         formats:{
             none: {
@@ -126,6 +133,7 @@ const config = {
                 accuracy: t.Number
             }
         }
-    }
+    },
+    "categories": ['Category 1', 'Category 2', 'Category 3', 'Category 4']
 };
 export default config;
