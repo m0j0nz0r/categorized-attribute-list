@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form';
-import TagsComponent from './TagsComponent';
-
+import config from '../config';
+import validator from './Validator';
 const Form = t.form.Form;
 
 t.String.getValidationErrorMessage = (value, path, context) => {
@@ -20,24 +20,11 @@ t.Number.getValidationErrorMessage = (value) => {
     return null;
 };
 
-const ResourceTypesObject = {0:"Default Value"};
-const ResourceTypes = t.enums(ResourceTypesObject);
+const ResourceTypes = t.enums(config.ResourceTypes);
 
-const DataTypesObject = {
-    string: "String",
-    obj: "Object"
-};
-const DataTypes = t.enums(DataTypesObject);
+const DataTypes = t.enums(config.DataTypes);
 
-const FormatTypesObject = {
-    none: "None",
-    number: "Number",
-    bool: "Boolean",
-    date: "Date-Time",
-    data: "CDATA",
-    uri: "URI"
-};
-const FormatTypes = t.enums(FormatTypesObject);
+const FormatTypes = t.enums(config.FormatTypes);
 
 const RangeFields = t.refinement(t.struct({
     rangeMin: t.Number,
@@ -92,80 +79,15 @@ const ConditionalAttributes = {
     },
 };
 
-const options = {
-    fields:{
-        name:{
-            label: "Name",
-            attrs:{
-                placeholder: "Enter a name"
-            }
-        },
-        description: {
-            label: "Description",
-            attrs:{
-                placeholder: "Enter a description for your new attribute"
-            }
-        },
-        deviceResourceType:{
-            disabled: true
-        },
-        defaultValue:{
-            label: "Default value",
-            attrs:{
-                placeholder: "Enter a default Value"
-            }
-        },
-        dataType: {
-            nullOption: false
-        },
-        format:{
-            nullOption: false
-        },
-        enumerations:{
-            factory: TagsComponent,
-            attrs: {
-                placeholder: "Enter value"
-            }
-        },
-        range: {
-            fields:{
-                rangeMin:{
-                    attrs: {
-                        placeholder: "Min range"
-                    }
-                },
-                rangeMax:{
-                    attrs: {
-                        placeholder: "Max range"
-                    }
-                }
-            }
-        },
-        unitOfMeasurement:{
-            label: "Unit of Measurement",
-            attrs:{
-                placeholder: "UoM (eg. mm)"
-            }
-        },
-        precision:{
-            attrs:{
-                placeholder: "Precision (eg. 0.5)"
-            }
-        },
-        accuracy:{
-            attrs:{
-                placeholder: "Accuracy (eg. 0.5)"
-            }
-        }
-    }
-};
-
 class Attribute extends Component {
     constructor(props, context, updater){
+        let options = config.AttributeOptions;
+
         super(props, context, updater);
 
         this.onFormChange = this.onFormChange.bind(this);
         this.showErrors = this.showErrors.bind(this);
+
         this.state = {
             value: props.value,
             options: options,
@@ -183,29 +105,7 @@ class Attribute extends Component {
             }
         }
 
-        return t.refinement(t.struct(returnValue), Attribute.validateAttribute);
-    }
-
-    static validateAttribute(value){
-        if (!value.name){
-            return false;
-        }
-        if ("number" === value.format){
-            return !!value.unitOfMeasurement && Attribute.validateNumberFormat(value).length === 0;
-        }
-        return true;
-    }
-
-    static validateNumberFormat(value){
-        let a = value.range && (value.range.rangeMax - value.range.rangeMin),
-            errors = [];
-        if (a % value.precision){
-            errors.push(0);
-        }
-        if (a % value.accuracy){
-            errors.push(1);
-        }
-        return errors;
+        return t.refinement(t.struct(returnValue), validator.validateAttribute);
     }
 
     componentDidMount(){
@@ -337,7 +237,7 @@ class Attribute extends Component {
                 if (!error.path.length){
                     if ("number" === error.actual.format){
 
-                        errors = Attribute.validateNumberFormat(error.actual);
+                        errors = validator.validateNumberFormat(error.actual);
                         if (errors.length > 0){
                             errors.forEach((v) => {
                                 switch(v){
@@ -397,13 +297,13 @@ class Attribute extends Component {
             let newValue;
             switch(k){
                 case 'deviceResourceType':
-                    newValue = ResourceTypesObject[value[k]];
+                    newValue = config.ResourceTypes[value[k]];
                     break;
                 case 'dataType':
-                    newValue = DataTypesObject[value[k]];
+                    newValue = config.DataTypes[value[k]];
                     break;
                 case 'format':
-                    newValue = FormatTypesObject[value[k]];
+                    newValue = config.FormatTypes[value[k]];
                     break;
                 case 'rangeMin': 
                 case 'rangeMax':

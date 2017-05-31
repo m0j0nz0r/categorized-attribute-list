@@ -14,6 +14,7 @@ const defaultAttributeValues = {
     enumerations: []
 };
 const categories =['Category 1', 'Category 2', 'Category 3', 'Category 4'];
+
 class App extends Component {
     constructor(props, context, updater){
         super(props, context, updater);
@@ -103,7 +104,6 @@ class App extends Component {
         let valid = false;
         if (this.state.paddedValues.length){
             valid = !this.state.paddedValues.find((v) => {return !v.isValid;});
-            console.log(valid);
         }
         return valid;
     }
