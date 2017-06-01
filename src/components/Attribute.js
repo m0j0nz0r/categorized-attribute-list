@@ -76,6 +76,9 @@ class Attribute extends Component {
                 rangeMin:0,
                 rangeMax:20
             };
+            value.unitOfMeasurement = 'mm';
+            value.precision = 1;
+            value.accuracy = 1;
         }
         if (value.format !== 'none'){
             value.enumerations = [];
