@@ -5,7 +5,18 @@ import ReactListInput from 'react-list-input';
 const Input = ({value, onChange, type}) => {
     return <input className="form-control" type={type} value={value} onChange={e => onChange(e.target.value)}/>
 };
-class TagsComponent extends t.form.Component { // extend the base class
+class TagsComponent extends t.form.Component {
+    /**
+     * Builds the JSX for each item in the component's value list.
+     *
+     * @param decorateHandle
+     * @param removable
+     * @param onChange
+     * @param onRemove
+     * @param value
+     * @returns {XML}
+     * @constructor
+     */
     Item ({decorateHandle, removable, onChange, onRemove, value}) {
         return (
             <div
@@ -27,6 +38,17 @@ class TagsComponent extends t.form.Component { // extend the base class
         )
     }
 
+    /**
+     * Builds the JSX for the input box and add button for the component.
+     *
+     * @param value
+     * @param onAdd
+     * @param canAdd
+     * @param add
+     * @param onChange
+     * @returns {XML}
+     * @constructor
+     */
     StagingItem ({value, onAdd, canAdd, add, onChange}) {
         return (
             <div className="form-group" style={{display:"flex"}}>
@@ -42,6 +64,12 @@ class TagsComponent extends t.form.Component { // extend the base class
             </div>
         )
     }
+
+    /**
+     * Returns the template factory for tcomb-forms to display the component.
+     *
+     * @returns {function(*)}
+     */
     getTemplate() {
         return (locals) => {
             return <div className="list-input">

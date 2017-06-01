@@ -23,12 +23,26 @@ class App extends Component {
             selectedIndex: 0
         };
     }
+
+    /**
+     * Updates the values array and the displayed JSON object whenever a value in the form is changed.
+     *
+     * @param index
+     * @param value
+     */
     onChangeHandler(index, value){
         let values = this.state.values, paddedValues = this.state.paddedValues;
         values[index] = value;
         paddedValues[index] = Attribute.getPaddedValue(value);
         this.setState({values:values, paddedValues:paddedValues});
     }
+
+    /**
+     * Builds the JSX for the collapsible part of the Attribute display.
+     *
+     * @param value
+     * @returns {XML}
+     */
     getPanel(value){
         let header = "",
             index = this.state.values.indexOf(value);
@@ -47,10 +61,18 @@ class App extends Component {
                     onChange={this.onChangeHandler.bind(this, index)}
                     selectedIndex={this.state.selectedIndex}
                 />
+                <button className="btn btn-danger material-icons" onClick={this.removeAttribute.bind(this, index)}>delete</button>
             </Collapse.Panel>
         );
     }
 
+    /**
+     * Builds the accordion container JSX as a tab element.
+     *
+     * @param categoryName - Unused, but needed to access the index argument passed by Array.prototype.map
+     * @param index
+     * @returns {XML}
+     */
     getTabPanel(categoryName, index){
         let panels = this.state.values.filter((v)=>{return v.category === index}).map(this.getPanel),
             collapse = <Collapse
@@ -69,21 +91,56 @@ class App extends Component {
             </TabPanel>
         );
     }
+
+    /**
+     * Initializes a new attribute and adds it to the values array
+     *
+     * @param category
+     */
     addAttribute(category){
-        let values = this.state.values.slice(0), value = Object.assign({}, defaultAttributeValues);
+        let values = this.state.values.slice(0),
+            value = Object.assign({}, defaultAttributeValues),
+            paddedValues = this.state.paddedValues.slice(0);
 
         value.category = category;
         value.id = Math.random().toString(36).substr(2);
 
         values.push(value);
 
-        this.setState({values: values});
+        paddedValues.push(Attribute.getPaddedValue(value));
+        this.setState({values: values, paddedValues: paddedValues});
     }
 
+    /**
+     * Removes the attribute at the specified index.
+     *
+     * @param {number} index
+     */
+    removeAttribute(index){
+        let values = this.state.values.splice(0),
+            paddedValues = this.state.paddedValues.splice(0);
+
+        values.splice(index, 1);
+        paddedValues.splice(index, 1);
+
+        this.setState({values: values, paddedValues: paddedValues});
+    }
+    /**
+     * Updates the selectedIndex state variable.
+     *
+     * @param index
+     * @returns {boolean}
+     */
     onTabSelect(index){
         this.setState({selectedIndex: index});
         return false;
     }
+
+    /**
+     * Returns true if all attributes in the values array are valid.
+     *
+     * @returns {boolean}
+     */
     isValid(){
         let valid = false;
         if (this.state.paddedValues.length){

@@ -1,3 +1,8 @@
+/**
+ * Constant to define error codes and messages.
+ *
+ * @type {{001: string, 002: string, 003: string, 004: string, 005: string, 006: string}}
+ */
 const errorCodes = {
     "001" : "Required field.",
     "002" : "Min range is greater than Max range",
@@ -6,12 +11,35 @@ const errorCodes = {
     "005" : "Is not a number",
     "006" : "Is duplicated"
 };
+
+/**
+ * Returns true if the value is empty.
+ *
+ * @param value
+ * @returns {boolean}
+ */
 function isEmpty(value){
     return (value === undefined || value === null || value === '');
 }
+
+/**
+ * Returns true if the supplied field has any errors in the list.
+ *
+ * @param {string} field
+ * @param {Object[]} errors
+ * @returns {boolean}
+ */
 function hasError(field, errors){
     return !!errors.find((e)=> e.field === field);
 }
+
+/**
+ * Encapsulation for validation for accuracy and precision fields.
+ *
+ * @param {string} field
+ * @param {number} value
+ * @param {Object[]} errors
+ */
 function precisionCheck(field, value, errors){
     const fieldValue = value[field];
     const range = value.range.rangeMax - value.range.rangeMin;
@@ -30,6 +58,14 @@ function precisionCheck(field, value, errors){
         }
     }
 }
+
+/**
+ * Main validation function. Returns a list of errors.
+ *
+ * @param value - Value to validate
+ * @param values - List of values to check for duplicate names.
+ * @returns {Array}
+ */
 function getAttributeErrors(value, values){
     let errors = [];
     if (isEmpty(value.name)){

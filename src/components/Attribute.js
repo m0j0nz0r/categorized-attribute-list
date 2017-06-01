@@ -36,6 +36,12 @@ class Attribute extends Component {
 
     }
 
+    /**
+     * Builds the type object to display the proper conditional fields depending on format and dataType.
+     *
+     * @param value
+     * @returns {*}
+     */
     static getAttribute(value){
         let returnValue = AttributeType;
 
@@ -48,6 +54,12 @@ class Attribute extends Component {
         return t.struct(returnValue);
     }
 
+    /**
+     * Clears unneeded fields and sets default values when needed.
+     *
+     * @param value
+     * @returns {*}
+     */
     static updateFormValues(value){
         if (value.dataType === 'obj'){
             value.defaultValue = null;
@@ -71,6 +83,13 @@ class Attribute extends Component {
         return value;
     }
 
+    /**
+     * Returns the options object for tcomb-forms to display the appropiate error messages.
+     *
+     * @param options
+     * @param errorList
+     * @returns {*}
+     */
     static getErrorDisplayOptions(options, errorList){
         let localOptions = t.update(options, {
             hasError: {$set:false},
@@ -106,7 +125,7 @@ class Attribute extends Component {
             obj.fields[error.field] = {
                 hasError: {$set:true},
                 error: {$set:validator.errorCodes[error.code]}
-            }
+            };
             if ("rangeMin" === error.field || "rangeMax" === error.field){
                 obj = {
                     fields:{
@@ -120,6 +139,12 @@ class Attribute extends Component {
         return localOptions;
     }
 
+    /**
+     * Returns a flattened object representing the passed value. For the json display requirement.
+     *
+     * @param value
+     * @returns {{}}
+     */
     static getPaddedValue(value){
         let returnValue = {};
         defaultAttributeKeys.forEach((k) =>{
@@ -134,6 +159,9 @@ class Attribute extends Component {
                 case 'format':
                     newValue = config.enumTypes.FormatTypes[value[k]];
                     break;
+                case 'category':
+                    newValue = config.categories[value[k]];
+                    break;
                 case 'rangeMin': 
                 case 'rangeMax':
                     newValue = value.range && value.range[k];
@@ -146,7 +174,13 @@ class Attribute extends Component {
 
         return returnValue;
     }
-    onFormChange(value, skipUpdate){
+
+    /**
+     * Updates form status and runs validation when any value is changed on the form.
+     *
+     * @param value
+     */
+    onFormChange(value){
         let options = t.update(this.state.options, {
                 fields: {
                     defaultValue: {
