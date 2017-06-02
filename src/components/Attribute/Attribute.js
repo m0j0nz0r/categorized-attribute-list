@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form';
-import config from '../config';
-import validator from './Validator';
+import config from '../../validations/config';
+import validator from '../../validations/Validator';
 const Form = t.form.Form;
 
 const AttributeType = config.AttributeType;
@@ -72,13 +72,19 @@ class Attribute extends Component {
             delete value.accuracy;
         }
         else{
+            let defaults = config.defaultNumberFormatValues,
+                rangeMin = ((value.range && value.range.rangeMin) == null)?defaults.range.rangeMin:value.range.rangeMin,
+                rangeMax = ((value.range && value.range.rangeMax) == null)?defaults.range.rangeMax:value.range.rangeMax,
+                unitOfMeasurement = (value.unitOfMeasurement == null)?defaults.unitOfMeasurement:value.unitOfMeasurement,
+                precision = (value.precision == null)?defaults.precision:value.precision,
+                accuracy = (value.accuracy == null)?defaults.accuracy:value.accuracy;
             value.range = {
-                rangeMin:0,
-                rangeMax:20
+                rangeMin:rangeMin,
+                rangeMax:rangeMax
             };
-            value.unitOfMeasurement = 'mm';
-            value.precision = 1;
-            value.accuracy = 1;
+            value.unitOfMeasurement = unitOfMeasurement;
+            value.precision = precision;
+            value.accuracy = accuracy;
         }
         if (value.format !== 'none'){
             value.enumerations = [];

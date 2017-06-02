@@ -13,3 +13,9 @@ body {
 .error-block{
     color: #a94442;
 }
+.rc-collapse{
+    min-height: 40vh;
+}
+.btn-success.disabled{
+    background: gray;
+}

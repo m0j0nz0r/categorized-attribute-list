@@ -1,5 +1,6 @@
-import TagsComponent from './components/TagsComponent';
+import TagsComponent from '../components/Attribute/TagsComponent/TagsComponent';
 import t from 'tcomb-form';
+
 const enumTypes = {
     "ResourceTypes" : {
         "0" : "Default Value"
@@ -16,7 +17,8 @@ const enumTypes = {
         "data" : "CDATA",
         "uri" : "URI"
     }
-}
+};
+
 const config = {
     "enumTypes" : enumTypes,
     "AttributeType" : {
@@ -118,6 +120,15 @@ const config = {
         enumerations: [],
         isValid: false
     },
+    "defaultNumberFormatValues": {
+        range: {
+            rangeMin: 0,
+            rangeMax: 20
+        },
+        unitOfMeasurement: 'mm',
+        precision: 1,
+        accuracy: 1
+    },
     "ConditionalAttributes" : {
         formats:{
             none: {
@@ -136,4 +147,5 @@ const config = {
     },
     "categories": ['Category 1', 'Category 2', 'Category 3', 'Category 4']
 };
+
 export default config;
