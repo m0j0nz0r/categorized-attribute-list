@@ -1,13 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import AttributeContainer from './components/AttributeContainer';
 
-class App extends Component {
-    render() {
-        return (
-            <AttributeContainer/>
-        );
-    }
-}
+const App = () => <AttributeContainer />;
 
 export default App;
