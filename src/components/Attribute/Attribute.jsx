@@ -47,19 +47,22 @@ class Attribute extends Component {
       delete returnValue.accuracy;
     } else {
       const defaults = config.defaultNumberFormatValues;
-      let rangeMin = returnValue.range.rangeMin;
-      let rangeMax = returnValue.range.rangeMax;
+      let rangeMin = null;
+      let rangeMax = null;
       let unitOfMeasurement = returnValue.unitOfMeasurement;
       let precision = returnValue.precision;
       let accuracy = returnValue.accuracy;
 
-      if (returnValue.range) {
-        if (rangeMin === null || rangeMin === undefined) {
-          rangeMin = defaults.range.rangeMin;
-        }
-        if (rangeMax === null || rangeMax === undefined) {
-          rangeMax = defaults.range.rangeMax;
-        }
+      if (!returnValue.range) {
+        returnValue.range = {};
+      }
+      rangeMin = returnValue.range.rangeMin;
+      if (rangeMin === null || rangeMin === undefined) {
+        rangeMin = defaults.range.rangeMin;
+      }
+      rangeMax = returnValue.range.rangeMax;
+      if (rangeMax === null || rangeMax === undefined) {
+        rangeMax = defaults.range.rangeMax;
       }
       if (unitOfMeasurement === null || unitOfMeasurement === undefined) {
         unitOfMeasurement = defaults.unitOfMeasurement;

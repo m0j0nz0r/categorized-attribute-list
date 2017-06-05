@@ -29,7 +29,7 @@ class TagsComponent extends t.form.Component {
           onClick={removable ? onRemove : x => x}
           style={{
             cursor: removable ? 'pointer' : 'not-allowed',
-            color: removable ? 'black' : 'gray',
+            color: removable ? '#666' : 'gray',
           }}
         >close</button>
         <Input className="form-control" value={value} onChange={onChange} />
