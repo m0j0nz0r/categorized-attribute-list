@@ -15,6 +15,7 @@ body {
 }
 .rc-collapse{
     min-height: 40vh;
+    background: white;
 }
 .btn-success.disabled{
     background: gray;
